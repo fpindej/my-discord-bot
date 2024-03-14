@@ -3,6 +3,7 @@ using ConsoleApp.Extensions;
 using Discord.BotConfiguration.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using OpenAi.Client.Extensions;
 
 using var host = Host.CreateDefaultBuilder(args)
     .ConfigureSerilog()
@@ -15,6 +16,8 @@ using var host = Host.CreateDefaultBuilder(args)
     })
     .ConfigureServices((builder, services) =>
     {
+        services.AddAiClient();
+        
         // The sequence of these calls is crucial due to assembly scanning, and they should be placed at the end.
         services.AddDiscordBotConfiguration(builder.Configuration);
         services.AddDiscordCommands(builder.Configuration);
