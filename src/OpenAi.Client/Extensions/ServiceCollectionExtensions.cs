@@ -15,6 +15,7 @@ public static class ServiceCollectionExtensions
             .ValidateOnStart();
 
         services.AddOpenAiClient();
+        services.AddAiTextService();
 
         return services;
     }
@@ -27,6 +28,13 @@ public static class ServiceCollectionExtensions
             return new OpenAIAPI(config.ApiKey);
         });
 
+        return services;
+    }
+
+    private static IServiceCollection AddAiTextService(this IServiceCollection services)
+    {
+        services.AddTransient<AiTextService>();
+        
         return services;
     }
 }
