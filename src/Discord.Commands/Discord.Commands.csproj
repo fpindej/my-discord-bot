@@ -16,6 +16,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Discord.BotConfiguration\Discord.BotConfiguration.csproj" />
       <ProjectReference Include="..\Logging\Logging.csproj" />
+      <ProjectReference Include="..\OpenAi.Client\OpenAi.Client.csproj" />
     </ItemGroup>
 
 </Project>
