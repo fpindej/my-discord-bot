@@ -5,23 +5,22 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using OpenAi.Client.Extensions;
 
-using var host = Host.CreateDefaultBuilder(args)
-    .ConfigureSerilog()
-    .ConfigureAppConfiguration(config =>
-    {
-        var environmentName = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
+var builder = Host.CreateDefaultBuilder(args);
+builder.ConfigureSerilog();
+builder.ConfigureAppConfiguration(config =>
+{
+    var environmentName = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
 
-        config.AddJsonFile("appsettings.json", false, true);
-        config.AddJsonFile($"appsettings.{environmentName}.json", true, true);
-    })
-    .ConfigureServices((builder, services) =>
-    {
-        services.AddAiClient();
-        
-        // The sequence of these calls is crucial due to assembly scanning, and they should be placed at the end.
-        services.AddDiscordBotConfiguration(builder.Configuration);
-        services.AddDiscordCommands(builder.Configuration);
-    })
-    .Build();
+    config.AddJsonFile("appsettings.json", false, true);
+    config.AddJsonFile($"appsettings.{environmentName}.json", true, true);
+});
+builder.ConfigureServices((hostBuilder, services) =>
+{
+    services.AddAiClient();
 
-await host.RunAsync();
+    // The sequence of these calls is crucial due to assembly scanning, and they should be placed at the end.
+    services.AddDiscordBotConfiguration(hostBuilder.Configuration);
+    services.AddDiscordCommands(hostBuilder.Configuration);
+});
+
+await builder.Build().RunAsync();
