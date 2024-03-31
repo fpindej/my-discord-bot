@@ -4,5 +4,7 @@ namespace OpenAi.Client.Interfaces;
 
 public interface IAiTextService
 {
-    Task<string> ChatAsync(string prompt, string? systemMessage = null);
+    Conversation CreateConversation(string? systemMessage = null);
+    
+    Task<string> ChatAsync(string prompt, ulong userId);
 }

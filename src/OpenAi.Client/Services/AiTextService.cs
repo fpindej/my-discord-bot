@@ -8,9 +8,8 @@ namespace OpenAi.Client.Services;
 public sealed class AiTextService : IAiTextService
 {
     private readonly IOpenAIAPI _openAiApi;
+    private readonly Dictionary<ulong, Conversation?> _conversations = new();
     private readonly ILogger<AiTextService> _logger;
-
-    private Conversation? _conversation;
 
     public AiTextService(IOpenAIAPI openAiApi, ILogger<AiTextService> logger)
     {
@@ -18,20 +17,33 @@ public sealed class AiTextService : IAiTextService
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<string> ChatAsync(string prompt, string? systemMessage = null)
+    public async Task<string> ChatAsync(string prompt, ulong userId)
     {
-        _conversation ??= CreateConversation(systemMessage);
-        _conversation.AppendUserInput(prompt);
-        var response = await _conversation.GetResponseFromChatbotAsync();
+        var conversation = GetOrCreateConversationForUser(userId);
+        conversation.AppendUserInput(prompt);
+        var response = await conversation.GetResponseFromChatbotAsync();
 
         return response;
     }
 
-    private Conversation CreateConversation(string? systemMessage = null)
+    public Conversation CreateConversation(string? systemMessage = null)
     {
-        _logger.LogInformation("Creating new conversation");
         var conversation = _openAiApi.Chat.CreateConversation();
         conversation.AppendSystemMessage(systemMessage);
+
+        return conversation;
+    }
+
+    private Conversation GetOrCreateConversationForUser(ulong userdId)
+    {
+        var conversation = _conversations.GetValueOrDefault(userdId);
+        
+        if (conversation is null)
+        {
+            _logger.LogInformation("Creating new conversation");
+            conversation = CreateConversation();
+            _conversations[userdId] = conversation;
+        }
 
         return conversation;
     }

@@ -10,5 +10,5 @@ public sealed class OpenAiConfiguration
     [Required]
     public string ApiKey { get; set; } = null!;
     
-    public Model AiModelType { get; set; } = Model.GPT4;
+    public Model AiModelType { get; set; } = Model.GPT4_Turbo;
 }
