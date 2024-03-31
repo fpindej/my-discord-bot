@@ -22,7 +22,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\CoinApi.Client\CoinApi.Client.csproj" />
       <ProjectReference Include="..\Discord.Commands\Discord.Commands.csproj" />
       <ProjectReference Include="..\Discord.BotConfiguration\Discord.BotConfiguration.csproj" />
       <ProjectReference Include="..\OpenAi.Client\OpenAi.Client.csproj" />
