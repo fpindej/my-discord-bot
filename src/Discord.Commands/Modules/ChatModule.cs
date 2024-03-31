@@ -1,5 +1,4 @@
 ﻿using Discord.Interactions;
-using OpenAI_API.Chat;
 using OpenAi.Client.Interfaces;
 
 namespace Discord.Commands.Modules;
@@ -14,11 +13,11 @@ public sealed class ChatModule : InteractionModuleBase<SocketInteractionContext>
     }
     
     [SlashCommand("chat", "Chat with AI")]
-    public async Task Chat(string prompt)
+    public async Task Chat(string prompt, bool startNewConversation = false)
     {
         await DeferAsync();
         var userId = Context.User.Id;
-        var response = await _aiTextService.ChatAsync(prompt, userId);
-        await FollowupAsync(response);
+        var response = await _aiTextService.ChatAsync(prompt, userId, startNewConversation);
+        await FollowupAsync(response); 
     }
 }

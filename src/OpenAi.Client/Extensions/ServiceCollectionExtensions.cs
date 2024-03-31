@@ -15,6 +15,8 @@ public static class ServiceCollectionExtensions
             .ValidateDataAnnotations()
             .ValidateOnStart();
 
+        services.AddMemoryCache();
+
         services.AddOpenAiClient();
         services.AddAiTextService();
 
@@ -35,7 +37,7 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddAiTextService(this IServiceCollection services)
     {
         services.AddSingleton<IAiTextService, AiTextService>();
-        
+
         return services;
     }
 }

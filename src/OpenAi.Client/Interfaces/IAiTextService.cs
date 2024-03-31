@@ -6,5 +6,5 @@ public interface IAiTextService
 {
     Conversation CreateConversation(string? systemMessage = null);
     
-    Task<string> ChatAsync(string prompt, ulong userId);
+    Task<string> ChatAsync(string prompt, ulong userId, bool isNewConversationRequested = false);
 }

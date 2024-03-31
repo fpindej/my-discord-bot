@@ -11,4 +11,6 @@ public sealed class OpenAiConfiguration
     public string ApiKey { get; set; } = null!;
     
     public Model AiModelType { get; set; } = Model.GPT4_Turbo;
+    
+    public TimeSpan CacheSlidingExpiration { get; set; } = TimeSpan.FromSeconds(30);
 }
