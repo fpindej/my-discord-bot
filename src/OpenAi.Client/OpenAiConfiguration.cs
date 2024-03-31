@@ -10,5 +10,5 @@ public sealed class OpenAiConfiguration
     [Required]
     public string ApiKey { get; set; } = null!;
     
-    public Model AiModelType { get; set; } = Model.ChatGPTTurbo;
+    public Model AiModelType { get; set; } = Model.GPT4;
 }

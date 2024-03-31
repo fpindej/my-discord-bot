@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OpenAI_API;
+using OpenAi.Client.Interfaces;
 using OpenAi.Client.Services;
 
 namespace OpenAi.Client.Extensions;
@@ -33,7 +34,7 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddAiTextService(this IServiceCollection services)
     {
-        services.AddTransient<AiTextService>();
+        services.AddSingleton<IAiTextService, AiTextService>();
         
         return services;
     }

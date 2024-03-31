@@ -1,12 +1,16 @@
 ﻿using Microsoft.Extensions.Logging;
 using OpenAI_API;
+using OpenAI_API.Chat;
+using OpenAi.Client.Interfaces;
 
 namespace OpenAi.Client.Services;
 
-public sealed class AiTextService
+public sealed class AiTextService : IAiTextService
 {
     private readonly IOpenAIAPI _openAiApi;
     private readonly ILogger<AiTextService> _logger;
+
+    private Conversation? _conversation;
 
     public AiTextService(IOpenAIAPI openAiApi, ILogger<AiTextService> logger)
     {
@@ -14,20 +18,21 @@ public sealed class AiTextService
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<string> GetTextResponse(string prompt)
+    public async Task<string> ChatAsync(string prompt, string? systemMessage = null)
     {
-        var chat = _openAiApi.Chat.CreateConversation();
-        
-        _logger.LogDebug("Setting up the mood for the conversation.");
-        chat.AppendSystemMessage("You are on a Discord server full of men who are trying to live their best lives and support each other, because they are homies. They love good mood, they love their egos, and they love emojis. You need to talk like you were their bro and recognize them as your G-s. It's completely fine to tell somebody \"Hey my G\"");
-        
-        _logger.LogDebug("Prompting the AI.");
-        chat.AppendUserInput(prompt);
-        _logger.LogDebug("Prompt completed.");
+        _conversation ??= CreateConversation(systemMessage);
+        _conversation.AppendUserInput(prompt);
+        var response = await _conversation.GetResponseFromChatbotAsync();
 
-        var response = await chat.GetResponseFromChatbotAsync();
-        _logger.LogDebug("AI response received.");
-        
         return response;
+    }
+
+    private Conversation CreateConversation(string? systemMessage = null)
+    {
+        _logger.LogInformation("Creating new conversation");
+        var conversation = _openAiApi.Chat.CreateConversation();
+        conversation.AppendSystemMessage(systemMessage);
+
+        return conversation;
     }
 }

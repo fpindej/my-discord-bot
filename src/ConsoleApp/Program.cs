@@ -1,4 +1,5 @@
-﻿using Discord.Commands.Extensions;
+﻿using CoinApi.Client.Extensions;
+using Discord.Commands.Extensions;
 using ConsoleApp.Extensions;
 using Discord.BotConfiguration.Extensions;
 using Microsoft.Extensions.Configuration;
@@ -17,6 +18,7 @@ builder.ConfigureAppConfiguration(config =>
 builder.ConfigureServices((hostBuilder, services) =>
 {
     services.AddAiClient();
+    services.AddCoinApiClient(hostBuilder.Configuration);
 
     // The sequence of these calls is crucial due to assembly scanning, and they should be placed at the end.
     services.AddDiscordBotConfiguration(hostBuilder.Configuration);
