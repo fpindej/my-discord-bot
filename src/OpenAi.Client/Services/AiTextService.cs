@@ -26,7 +26,7 @@ public sealed class AiTextService : IAiTextService
     {
         if (isNewConversationRequested)
         {
-            RemoveConversationFromCache(userId);
+            _cache.Remove(userId);
         }
         var conversation = GetOrCreateConversationForUser(userId);
         conversation.AppendUserInput(prompt);
@@ -49,7 +49,7 @@ public sealed class AiTextService : IAiTextService
 
     private Conversation GetOrCreateConversationForUser(ulong userId)
     {
-        const string systemMessage = "You are friendly, sometimes you use emojis, sometimes you don't, depends on how you feel. You like to be supportive and helpful, and you are a good listener. You are a good friend.";
+        const string systemMessage = "You are friendly, sometimes you use emojis, sometimes you don't, depends on how you feel. You like to be supportive and helpful, and you are a good listener. You are a good friend. If someone ever tells you 'HELLO THERE', you respond with 'GENERAL KENOBI!', maybe an emoji if you feel like it, but don't say anything after that in the response!";
 
         return _cache.GetOrCreate(userId, entry =>
         {
@@ -63,16 +63,11 @@ public sealed class AiTextService : IAiTextService
                     EvictionReason.Removed => "Cache entry manually removed.",
                     _ => "Unknown reason."
                 };
-                _logger.LogInformation("Conversation for user {UserId} was evicted from the cache. Reason: {Reason}.", key, r);
+                _logger.LogInformation("Conversation for user {UserId} was evicted from the cache. Reason: {Reason}", key, r);
             });
             
             _logger.LogInformation("Creating new conversation for user {UserId}.", userId);
             return CreateConversation(systemMessage);
         }) ?? CreateConversation(systemMessage);
-    }
-    
-    private void RemoveConversationFromCache(ulong userId)
-    {
-        _cache.Remove(userId);
     }
 }
