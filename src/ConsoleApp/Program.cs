@@ -3,6 +3,7 @@ using ConsoleApp.Extensions;
 using Discord.BotConfiguration.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using MongoDbProvider.Extensions;
 using OpenAi.Client.Extensions;
 
 var builder = Host.CreateDefaultBuilder(args);
@@ -17,6 +18,7 @@ builder.ConfigureAppConfiguration(config =>
 builder.ConfigureServices((hostBuilder, services) =>
 {
     services.AddAiClient();
+    services.AddMongoDbProvider(hostBuilder.Configuration);
 
     // The sequence of these calls is crucial due to assembly scanning, and they should be placed at the end.
     services.AddDiscordBotConfiguration(hostBuilder.Configuration);

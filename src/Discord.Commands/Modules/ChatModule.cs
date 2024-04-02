@@ -16,8 +16,7 @@ public sealed class ChatModule : InteractionModuleBase<SocketInteractionContext>
     public async Task Chat(string prompt, bool startNewConversation = false)
     {
         await DeferAsync();
-        var userId = Context.User.Id;
-        var response = await _aiTextService.ChatAsync(prompt, userId, startNewConversation);
+        var response = await _aiTextService.ChatAsync(prompt, Context.User.Id, Context.User.Username, startNewConversation);
         await FollowupAsync(response); 
     }
 }

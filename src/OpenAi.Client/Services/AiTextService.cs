@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using MongoDbProvider.Models;
+using MongoDbProvider.Repositories;
 using OpenAI_API;
 using OpenAI_API.Chat;
 using OpenAi.Client.Interfaces;
@@ -13,16 +15,18 @@ public sealed class AiTextService : IAiTextService
     private readonly IMemoryCache _cache;
     private readonly OpenAiConfiguration _config;
     private readonly ILogger<AiTextService> _logger;
+    private readonly LlmPromptRepository _llmPromptRepository;
 
-    public AiTextService(IOpenAIAPI openAiApi, IMemoryCache cache, IOptionsSnapshot<OpenAiConfiguration> config, ILogger<AiTextService> logger)
+    public AiTextService(IOpenAIAPI openAiApi, IMemoryCache cache, IOptions<OpenAiConfiguration> config, ILogger<AiTextService> logger, LlmPromptRepository llmPromptRepository)
     {
         _openAiApi = openAiApi ?? throw new ArgumentNullException(nameof(openAiApi));
         _cache = cache ?? throw new ArgumentNullException(nameof(cache));
         _config = config.Value ?? throw new ArgumentNullException(nameof(config));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _llmPromptRepository = llmPromptRepository;
     }
 
-    public async Task<string> ChatAsync(string prompt, ulong userId, bool isNewConversationRequested = false)
+    public async Task<string> ChatAsync(string prompt, ulong userId, string username, bool isNewConversationRequested = false)
     {
         if (isNewConversationRequested)
         {
@@ -31,6 +35,22 @@ public sealed class AiTextService : IAiTextService
         var conversation = GetOrCreateConversationForUser(userId);
         conversation.AppendUserInput(prompt);
         var response = await conversation.GetResponseFromChatbotAsync();
+        
+        try
+        {
+            var promptEntity = new LlmPrompt
+            {
+                UserId = userId,
+                Username = username,
+                Prompt = prompt,
+                Response = response
+            };
+            await _llmPromptRepository.CreateAsync(promptEntity);
+        }
+        catch (Exception e)
+        {
+            _logger.LogWarning("Failed to save LLM prompt to the database. Reason: {Reason}", e.Message);
+        }
 
         return response;
     }
