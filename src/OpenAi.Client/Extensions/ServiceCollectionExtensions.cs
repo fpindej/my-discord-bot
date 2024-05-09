@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OpenAI_API;
+using OpenAi.Client.Factories;
 using OpenAi.Client.Interfaces;
 using OpenAi.Client.Services;
 
@@ -14,11 +15,9 @@ public static class ServiceCollectionExtensions
             .BindConfiguration(OpenAiConfiguration.SectionName)
             .ValidateDataAnnotations()
             .ValidateOnStart();
-
-        services.AddMemoryCache();
-
+        
         services.AddOpenAiClient();
-        services.AddAiTextService();
+        services.AddAiServices();
 
         return services;
     }
@@ -34,10 +33,22 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    private static IServiceCollection AddAiServices(this IServiceCollection services)
+    {
+        services.AddAiTextService();
+        services.AddSingleton<IAiImageService, AiImageService>();
+        services.AddSingleton<IAiAudioService, AiAudioService>();
+
+        return services;
+    }
+
     private static IServiceCollection AddAiTextService(this IServiceCollection services)
     {
+        services.AddMemoryCache();
+        services.AddSingleton<IPromptService, PromptService>();
+        services.AddSingleton<ChatFactory>();
         services.AddSingleton<IAiTextService, AiTextService>();
-
+        
         return services;
     }
 }
