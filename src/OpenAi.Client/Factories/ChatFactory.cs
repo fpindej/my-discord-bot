@@ -16,7 +16,7 @@ public sealed class ChatFactory
         _logger = logger;
     }
 
-    public Conversation CreateConversation(ulong userId, IOpenAIAPI openAiapi, TextAiConfiguration config,
+    public Conversation CreateConversation(ulong userId, IOpenAIAPI openAiApi, TextAiConfiguration config,
         string? defaultChatContext = null)
     {
         return _cache.GetOrCreate(userId, entry =>
@@ -37,9 +37,9 @@ public sealed class ChatFactory
                    });
 
                    _logger.LogInformation("Creating new conversation for user {UserId}.", userId);
-                   return CreateConversation(openAiapi, config, defaultChatContext);
+                   return CreateConversation(openAiApi, config, defaultChatContext);
                }) ??
-               CreateConversation(openAiapi, config, defaultChatContext);
+               CreateConversation(openAiApi, config, defaultChatContext);
     }
 
     public void RemoveConversation(ulong userId)
