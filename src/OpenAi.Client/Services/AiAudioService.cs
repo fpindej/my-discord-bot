@@ -18,7 +18,7 @@ public class AiAudioService : IAiAudioService
         _config = config.Value.AudioAiConfiguration ?? throw new ArgumentNullException(nameof(config));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
-    
+
     public async Task<Stream> CreateAudioAsync(string prompt)
     {
         var request = new TextToSpeechRequest
@@ -27,7 +27,7 @@ public class AiAudioService : IAiAudioService
             Input = prompt,
             Voice = TextToSpeechRequest.Voices.Alloy
         };
-        
+
         return await _openAiApi.TextToSpeech.GetSpeechAsStreamAsync(request);
     }
 }

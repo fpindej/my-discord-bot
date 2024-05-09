@@ -25,7 +25,7 @@ public class PromptService : IPromptService
             Prompt = prompt,
             Response = response
         };
-        
+
         try
         {
             await _llmPromptRepository.CreateAsync(promptEntity);

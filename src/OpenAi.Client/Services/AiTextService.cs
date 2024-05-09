@@ -15,7 +15,8 @@ public sealed class AiTextService : IAiTextService
     private readonly ILogger<AiTextService> _logger;
     private readonly IPromptService _promptService;
 
-    public AiTextService(IOpenAIAPI openAiApi, IOptions<OpenAiConfiguration> config, ChatFactory chatFactory, ILogger<AiTextService> logger, IPromptService promptService)
+    public AiTextService(IOpenAIAPI openAiApi, IOptions<OpenAiConfiguration> config, ChatFactory chatFactory,
+        ILogger<AiTextService> logger, IPromptService promptService)
     {
         _openAiApi = openAiApi ?? throw new ArgumentNullException(nameof(openAiApi));
         _config = config.Value.TextAi ?? throw new ArgumentNullException(nameof(config));
@@ -24,7 +25,8 @@ public sealed class AiTextService : IAiTextService
         _promptService = promptService;
     }
 
-    public async Task<string> ChatAsync(string prompt, ulong userId, string username, bool isNewConversationRequested = false)
+    public async Task<string> ChatAsync(string prompt, ulong userId, string username,
+        bool isNewConversationRequested = false)
     {
         try
         {

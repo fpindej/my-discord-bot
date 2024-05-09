@@ -26,11 +26,11 @@ public class AiImageService : IAiImageService
             NumOfImages = 1,
             Prompt = prompt,
             Model = _config.ImageModelType,
-            ResponseFormat = ImageResponseFormat.B64_json,
+            ResponseFormat = ImageResponseFormat.B64_json
         };
         var response = await _openAiApi.ImageGenerations.CreateImageAsync(request);
         var result = Convert.FromBase64String(response.Data.First().Base64Data);
-        
+
         return new MemoryStream(result);
     }
 }

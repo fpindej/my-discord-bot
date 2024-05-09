@@ -14,7 +14,8 @@ public class LlmPromptContext
         var client = new MongoClient(options.Value.ConnectionString);
         _db = client.GetDatabase(options.Value.DatabaseName);
 
-        LlmPromptsContext.Indexes.CreateOne(new CreateIndexModel<LlmPrompt>(Builders<LlmPrompt>.IndexKeys.Wildcard(p => p.UserId)));
+        LlmPromptsContext.Indexes.CreateOne(
+            new CreateIndexModel<LlmPrompt>(Builders<LlmPrompt>.IndexKeys.Wildcard(p => p.UserId)));
     }
 
     public IMongoCollection<LlmPrompt> LlmPromptsContext => _db.GetCollection<LlmPrompt>(CollectionName);

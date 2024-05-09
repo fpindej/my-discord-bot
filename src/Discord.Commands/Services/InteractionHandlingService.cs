@@ -29,11 +29,12 @@ public sealed class InteractionHandlingService : IHostedService
     {
         _client.Ready += () => _commands.RegisterCommandsGloballyAsync();
         _client.InteractionCreated += OnInteractionAsync;
-        
+
         _logger.LogInformation("Registering commands...");
-        
+
         // scan for modules in every assembly
         var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
         foreach (var assembly in assemblies)
         {
             await _commands.AddModulesAsync(assembly, _services);
@@ -67,12 +68,14 @@ public sealed class InteractionHandlingService : IHostedService
             _logger.LogError(e, "Error handling interaction.");
 
             if (interaction.Type is InteractionType.ApplicationCommand)
+            {
                 await interaction.GetOriginalResponseAsync().ContinueWith(async msg => await msg.Result.DeleteAsync());
+            }
 
             throw;
         }
     }
-    
+
     private Task InteractionExecutedAsync(ICommandInfo commandInfo, IInteractionContext interactionContext,
         Interactions.IResult result)
     {

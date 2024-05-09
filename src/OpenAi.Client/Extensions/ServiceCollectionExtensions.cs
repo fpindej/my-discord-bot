@@ -15,7 +15,7 @@ public static class ServiceCollectionExtensions
             .BindConfiguration(OpenAiConfiguration.SectionName)
             .ValidateDataAnnotations()
             .ValidateOnStart();
-        
+
         services.AddOpenAiClient();
         services.AddAiServices();
 
@@ -48,7 +48,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IPromptService, PromptService>();
         services.AddSingleton<ChatFactory>();
         services.AddSingleton<IAiTextService, AiTextService>();
-        
+
         return services;
     }
 }
