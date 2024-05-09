@@ -47,7 +47,7 @@ public sealed class AiTextService : IAiTextService
             _chatFactory.RemoveConversation(userId);
         }
 
-        var systemMessage = _config.SystemMessage;
+        var systemMessage = _config.DefaultChatContext;
         return _chatFactory.CreateConversation(userId, _openAiApi, _config, systemMessage);
     }
 

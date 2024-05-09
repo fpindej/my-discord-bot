@@ -16,7 +16,7 @@ public sealed class ChatFactory
         _logger = logger;
     }
     
-    public Conversation CreateConversation(ulong userId, IOpenAIAPI openAiapi, TextAiConfiguration config, string? systemMessage = null)
+    public Conversation CreateConversation(ulong userId, IOpenAIAPI openAiapi, TextAiConfiguration config, string? defaultChatContext = null)
     {
         return _cache.GetOrCreate(userId, entry =>
         {
@@ -34,8 +34,8 @@ public sealed class ChatFactory
             });
             
             _logger.LogInformation("Creating new conversation for user {UserId}.", userId);
-            return CreateConversation(openAiapi, config, systemMessage);
-        }) ?? CreateConversation(openAiapi, config, systemMessage);
+            return CreateConversation(openAiapi, config, defaultChatContext);
+        }) ?? CreateConversation(openAiapi, config, defaultChatContext);
     }
     
     public void RemoveConversation(ulong userId)
@@ -43,14 +43,14 @@ public sealed class ChatFactory
         _cache.Remove(userId);
     }
     
-    private Conversation CreateConversation(IOpenAIAPI openAiApi, TextAiConfiguration config, string? systemMessage = null)
+    private Conversation CreateConversation(IOpenAIAPI openAiApi, TextAiConfiguration config, string? defaultChatContext = null)
     {
         var chatRequest = new ChatRequest
         {
             Model = config.TextModelType
         };
         var conversation = openAiApi.Chat.CreateConversation(chatRequest);
-        conversation.AppendSystemMessage(systemMessage);
+        conversation.AppendSystemMessage(defaultChatContext);
 
         return conversation;
     }

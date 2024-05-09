@@ -10,11 +10,11 @@ public sealed class OpenAiConfiguration
     [Required]
     public string ApiKey { get; init; } = null!;
 
+    public TextAiConfiguration? TextAi { get; init; }
+
     public ImageAiConfiguration? ImageAiConfiguration { get; init; }
 
     public AudioAiConfiguration? AudioAiConfiguration { get; init; }
-
-    public TextAiConfiguration? TextAi { get; init; }
 }
 
 public sealed class TextAiConfiguration
@@ -23,7 +23,7 @@ public sealed class TextAiConfiguration
 
     public Model? TextModelType { get; init; } = Model.GPT4_Turbo;
 
-    public string? SystemMessage { get; init; }
+    public string? DefaultChatContext { get; init; }
 
     public TimeSpan CacheSlidingExpiration { get; init; } = TimeSpan.FromSeconds(30);
 }
