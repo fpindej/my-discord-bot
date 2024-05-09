@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Discord.Interactions;
+﻿using Discord.Interactions;
 using Discord.WebSocket;
 using Logging;
 using Microsoft.Extensions.Hosting;
@@ -34,7 +33,11 @@ public sealed class InteractionHandlingService : IHostedService
         _logger.LogInformation("Registering commands...");
         
         // scan for modules in every assembly
-        await _commands.AddModulesAsync(Assembly.GetExecutingAssembly(), _services);
+        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+        foreach (var assembly in assemblies)
+        {
+            await _commands.AddModulesAsync(assembly, _services);
+        }
 
         _commands.InteractionExecuted += InteractionExecutedAsync;
     }
