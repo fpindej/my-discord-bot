@@ -11,7 +11,7 @@ public sealed class ImageModule : InteractionModuleBase<SocketInteractionContext
     {
         _aiImageService = aiImageService;
     }
-    
+
     [SlashCommand("image", "Paint something with words!")]
     public async Task Chat(string prompt)
     {

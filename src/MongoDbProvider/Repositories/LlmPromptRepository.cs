@@ -11,7 +11,7 @@ public class LlmPromptRepository
     {
         _context = context;
     }
-    
+
     public Task CreateAsync(LlmPrompt prompt)
     {
         return _context.LlmPromptsContext.InsertOneAsync(prompt);
